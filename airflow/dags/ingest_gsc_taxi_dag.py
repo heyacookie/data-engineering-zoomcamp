@@ -73,15 +73,16 @@ def download_upload_dag(
         download_dataset_task >> local_to_gcs_task >> rm_task
 
 URL_PREFIX = 'https://s3.amazonaws.com/nyc-tlc/trip+data'
+DAG_RUN_YEAR = '{{ dag_run.logical_date.strftime(\'%Y\') }}'
 
 # Yellow Taxi DAG
 YELLOW_TAXI_FILE = 'yellow_tripdata_{{ dag_run.logical_date.strftime(\'%Y-%m\') }}.parquet'
 YELLOW_TAXI_URL_TEMPLATE = f"{URL_PREFIX}/{YELLOW_TAXI_FILE}"
 YELLOW_TAXI_LOCAL_FILE_TEMPLATE = f"{AIRFLOW_HOME}/{YELLOW_TAXI_FILE}"
-YELLOW_TAXI_GCS_PATH_TEMPLATE = f"raw/yellow_tripdata/{{ dag_run.logical_date.strftime(\'%Y\') }}/{YELLOW_TAXI_FILE}"
+YELLOW_TAXI_GCS_PATH_TEMPLATE = f"raw/yellow_tripdata/{DAG_RUN_YEAR}/{YELLOW_TAXI_FILE}"
 
 yellow_taxi_data_dag = DAG(
-    dag_id="yellow_taxi_data_v1",
+    dag_id="yellow_taxi_data_v1.1",
     schedule_interval="0 6 2 * *",
     start_date=datetime(2019, 1, 1),
     default_args=default_args,
@@ -101,10 +102,10 @@ download_upload_dag(
 GREEN_TAXI_FILE = 'green_tripdata_{{ dag_run.logical_date.strftime(\'%Y-%m\') }}.parquet'
 GREEN_TAXI_URL_TEMPLATE = f"{URL_PREFIX}/{GREEN_TAXI_FILE}"
 GREEN_TAXI_LOCAL_FILE_TEMPLATE = f"{AIRFLOW_HOME}/{GREEN_TAXI_FILE}"
-GREEN_TAXI_GCS_PATH_TEMPLATE = f"raw/green_tripdata/{{ dag_run.logical_date.strftime(\'%Y\') }}/{GREEN_TAXI_FILE}"
+GREEN_TAXI_GCS_PATH_TEMPLATE = f"raw/green_tripdata/{DAG_RUN_YEAR}/{GREEN_TAXI_FILE}"
 
 green_taxi_data_dag = DAG(
-    dag_id="green_taxi_data_v1",
+    dag_id="green_taxi_data_v1.1",
     schedule_interval="0 7 2 * *",
     start_date=datetime(2019, 1, 1),
     default_args=default_args,
@@ -124,10 +125,10 @@ download_upload_dag(
 FHV_TAXI_FILE = 'fhv_tripdata_{{ dag_run.logical_date.strftime(\'%Y-%m\') }}.parquet'
 FHV_TAXI_URL_TEMPLATE = f"{URL_PREFIX}/{FHV_TAXI_FILE}"
 FHV_TAXI_LOCAL_FILE_TEMPLATE = f"{AIRFLOW_HOME}/{FHV_TAXI_FILE}"
-FHV_TAXI_GCS_PATH_TEMPLATE = f"raw/fhv_tripdata/{{ dag_run.logical_date.strftime(\'%Y\') }}/{FHV_TAXI_FILE}"
+FHV_TAXI_GCS_PATH_TEMPLATE = f"raw/fhv_tripdata/{DAG_RUN_YEAR}/{FHV_TAXI_FILE}"
 
 fhv_taxi_data_dag = DAG(
-    dag_id="fhv_taxi_data_v1",
+    dag_id="fhv_taxi_data_v1.1",
     schedule_interval="0 8 2 * *",
     start_date=datetime(2019, 1, 1),
     default_args=default_args,
