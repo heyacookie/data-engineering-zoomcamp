@@ -14,7 +14,7 @@ BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'trips_data_all')
 
 TRIP_TYPES = {
     'yellow': 'tpep_pickup_datetime',
-    # 'green': 'lpep_pickup_datetime',
+    'green': 'lpep_pickup_datetime',
     # 'fhv': 'Pickup_datetime'
 }
 
@@ -46,8 +46,7 @@ with DAG(
                 },
                 "externalDataConfiguration": {
                     "sourceFormat": "PARQUET",
-                    "sourceUris": [f"gs://{BUCKET}/raw/{trip_type}_tripdata/2019/*"],
-                    "autodetect": True
+                    "sourceUris": [f"gs://{BUCKET}/raw/{trip_type}_tripdata/*"],
                 }
             },
         )
@@ -58,7 +57,7 @@ with DAG(
             f"AS SELECT * FROM {BIGQUERY_DATASET}.{trip_type}_external;"
         )
 
-        bg_partition_task = BigQueryInsertJobOperator(
+        bq_partition_task = BigQueryInsertJobOperator(
             task_id=f"bq_{trip_type}_partition_task",
             configuration={
                 "query": {
@@ -68,4 +67,4 @@ with DAG(
             }
         )
 
-        gcs_to_bq_ext_task >> bg_partition_task
+        gcs_to_bq_ext_task >> bq_partition_task
