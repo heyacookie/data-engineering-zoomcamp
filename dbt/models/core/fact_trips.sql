@@ -1,10 +1,10 @@
 {{ config(materialized='table') }}
 
--- with green_data as (
---     select *, 
---         'Green' as service_type 
---     from {{ ref('stg_green_tripdata') }}
--- ), 
+with green_data as (
+    select *, 
+        'Green' as service_type 
+    from {{ ref('stg_green_tripdata') }}
+), 
 
 yellow_data as (
     select *, 
@@ -13,8 +13,8 @@ yellow_data as (
 ), 
 
 trips_unioned as (
-    -- select * from green_data
-    -- union all
+    select * from green_data
+    union all
     select * from yellow_data
 ), 
 
